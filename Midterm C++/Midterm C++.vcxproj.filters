@@ -18,7 +18,10 @@
     <ClCompile Include="ThisProgramDoesNotGaslightYou.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GaslightDatabase.cpp">
+    <ClCompile Include="Anger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Account.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,7 +29,10 @@
     <ClInclude Include="peetsCUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GaslightDatabase.h">
+    <ClInclude Include="Anger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Account.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

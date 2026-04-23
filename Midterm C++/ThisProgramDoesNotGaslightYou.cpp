@@ -7,13 +7,12 @@
 *
 */
 #include "peetsCUtil.h"
-#include "GaslightDatabase.h"
+#include "Anger.h"
+#include "Account.h"
 
 // used for anger status
 
-void writeAnger(Anger);
-Anger checkAnger();
-Anger giveAnger();
+
 
 // ask user for personal info then get angry
 Anger enterPersonal();
@@ -28,7 +27,7 @@ int main(){
 
 	// major thresholds of anger 
 	
-	Anger anger{false, 1, BASE};
+	Anger anger;
 	int choice;
 	float search = 0;
 	bool sorted = false;
@@ -36,10 +35,9 @@ int main(){
 	vector<Data> dataSet;
 	vector<string> menu{"Enter Data", "Display Data", "Sort Data", "Search Data"};
 
-	anger = checkAnger();
 
 	//ask for personal info only happens first ime you enter program
-	if (!anger.angered) {
+	if (anger == HAPPY) {
 
 
 	}
@@ -49,10 +47,10 @@ int main(){
 		cout << "Doge Coin Tracker";
 
 		//visible show of anger in the title by the system
-		if (anger.angerValue > MODERATE) {
+		if (anger > MODERATE) {
 			cout << "!";
-			if (anger.angerValue > VERY) {
-				for (int i = anger.angerValue; i > VERY; i--) {
+			if (anger > VERY) {
+				for (int i = anger.getAngerValue(); i > VERY; i--) {
 					cout << "!!";
 				}
 			}
@@ -85,17 +83,17 @@ int main(){
 			cout << "What are you looking for?" << endl;
 			while (!(cin >> search) || cin.fail() || (search < 0 || search >= 10000)) {
 				
-				if (anger.angerValue < MODERATE) {
+				if (anger < MODERATE) {
 					if (search < 0 || search >= 10000) {
 						cout << "We don't work with those numbers" << endl;
 					}
 					else {
 						cout << "Thats not exactly a number persay" << endl;
 					}
-					anger.angerValue += .3;
+					anger += .3;
 				}
 				else {
-					anger.angerValue += .1;
+					anger += .1;
 				}
 
 				cin.clear();
@@ -113,7 +111,7 @@ int main(){
 			if (getRes("Are you sure (y/n)", 'y', 'n') == 'n') {
 				choice = 0;
 			}
-			if (anger.angerValue > VERY) {
+			if (anger > VERY) {
 				if (getRand(1, 30) == 1) {
 					while (choice != 0) {
 						if (getRes("Are you sure (y/n)", 'y', 'n') == 'n') {
@@ -126,15 +124,12 @@ int main(){
 
 		}
 
-		checkLevel(anger);
-		writeAnger(anger);
-
 	} while (choice != menu.size() + 1);
 
-	if (anger.angerValue < MODERATE) {
+	if (anger < MODERATE) {
 		endProgram();
 	}
-	else if (anger.angerLevel == HORROR) {
+	else if (anger == HORROR) {
 		for (int i = 0; i < 2000; i++) {
 			cout << getRand(0, 1);
 			Sleep(20);
@@ -146,68 +141,10 @@ int main(){
 
 //file processing for anger retention
 
-Anger checkAnger() {
-	Anger anger;
-	string foder;
-
-	fin.open("angy.txt");
-
-	if (!fin) {
-		anger = { false, 1, BASE };
-	}
-
-	fin >> foder;
-	fin >> anger.angered;
-
-	fin >> foder;
-	fin >> anger.angerValue;
-
-	// cool down after leaving
-
-	if (anger.angerValue > 5) {
-		anger.angerValue -= 1;
-	}
-	else if (anger.angerValue == 1) {
-		anger.angered = false;
-	}
-	else {
-		anger.angerValue -= .5;
-	}
-
-	fin.close();
-
-	checkLevel(anger);
-
-	return anger;
-}
-
-void writeAnger(Anger anger) {
-
-	fout.open("angy.txt");
-
-	fout << "Angered:\t";
-	fout << anger.angered;
-	fout << endl;
-
-	fout << "AngerLevel:\t";
-	fout << anger.angerValue;
-
-	fout.close();
-
-}
-
 
 // handles the begining section that initiates the anger system
 
-Anger giveAnger()
-{
-	return Anger();
-}
 
-Anger enterPersonal()
-{
-	return Anger();
-}
 
 void enterData(vector<Data>& dataSet, Anger& anger)
 {
@@ -227,7 +164,7 @@ void enterData(vector<Data>& dataSet, Anger& anger)
 
 		//space for anger related stuff
 
-		if (anger.angerValue < MODERATE) {
+		if (anger < MODERATE) {
 			cout << "(####.##)";
 		}
 		else {
@@ -280,16 +217,16 @@ void enterData(vector<Data>& dataSet, Anger& anger)
 			//If invalid for incorrect forating
 			if (!valid) {
 				//normal incorrect validation output
-				if (anger.angerValue < MODERATE) {
+				if (anger < MODERATE) {
 					cout << "No thats not a number" << endl;
-					anger.angerValue += .5;
+					anger += .5;
 				}
 				//silent treatment then just being down right upset
 				else {
-					if (anger.angerLevel == HORROR) {
+					if (anger == HORROR) {
 						cout << ":(" << endl;
 					}
-					anger.angerValue += .2;
+					anger += .2;
 				}
 			}
 		}
@@ -310,16 +247,16 @@ void enterData(vector<Data>& dataSet, Anger& anger)
 
 void displayData(vector<Data>& dataSet, Anger& anger)
 {
-	if (anger.angerLevel > VERY) {
+	if (anger > VERY) {
 
 		cout << "\n\n\nLoading";
-		for (int i = anger.angerValue; i > MODERATE; i--) {
+		for (int i = anger.getAngerLevel(); i > MODERATE; i--) {
 			Sleep(30000);
 			cout << ".";
 		}
 		cout << endl;
 	}
-	if (anger.angerValue > HORROR) {
+	if (anger > HORROR) {
 		cout << "Oo ps I droppe d your d ata com e ba ck later" << endl;
 	}
 	else {

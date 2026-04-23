@@ -123,11 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GaslightDatabase.cpp" />
+    <ClCompile Include="Account.cpp" />
+    <ClCompile Include="Anger.cpp" />
     <ClCompile Include="ThisProgramDoesNotGaslightYou.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GaslightDatabase.h" />
+    <ClInclude Include="Account.h" />
+    <ClInclude Include="Anger.h" />
     <ClInclude Include="peetsCUtil.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
