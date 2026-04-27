@@ -12,327 +12,314 @@
 
 // used for anger status
 
+Account logIn();
+bool checkName(string);
+bool checkNumber(string);
+void createAccount();
+void deposit(Account&);
+void withdraw(Account&);
+void saveAccount(Account);
+
+// gotta love the power of google
+void writeString(ofstream&, const string&);
+void readString(ifstream&, string&);
 
 
-// ask user for personal info then get angry
-Anger enterPersonal();
-
-//actual database
-void enterData(vector<Data>&, Anger&);
-void displayData(vector<Data>&, Anger&);
-void sortData(vector<Data>&, Anger&);
-void searchData(vector<Data>&, float, Anger&, bool);
 
 int main(){
 
-	// major thresholds of anger 
-	
-	Anger anger;
 	int choice;
-	float search = 0;
-	bool sorted = false;
-
-	vector<Data> dataSet;
-	vector<string> menu{"Enter Data", "Display Data", "Sort Data", "Search Data"};
-
-
-	//ask for personal info only happens first ime you enter program
-	if (anger == HAPPY) {
-
-
-	}
+	Account account;
+	vector<string> menu{"Withdraw", "Deposit"};
+	cout << fixed << setprecision(2);
 
 	do {
 
-		cout << "Doge Coin Tracker";
+		cout << "Cheese Bank\n" << endl;
+		cout << "1). LogIn\n2). Create Account" << endl;
+		cout << "Choice: ";
+		while (!(cin >> choice) || cin.fail() || choice < 1 || choice > 2) {
+			cin.clear();
+			cin.ignore(1000, '\n');
+			cout << "Invalid Input";
+			cout << "Press enter to continue:";
+			cin.get();
 
-		//visible show of anger in the title by the system
-		if (anger > MODERATE) {
-			cout << "!";
-			if (anger > VERY) {
-				for (int i = anger.getAngerValue(); i > VERY; i--) {
-					cout << "!!";
-				}
-			}
+			cout << "Cheese Bank\n" << endl;
+			cout << "1). LogIn\n2). Create Account" << endl;
+			cout << "Choice: ";
 		}
-		cout << "\n\n";
 
-
-		choice = makeMenu(menu);
-
-		switch(choice) {
-
-			//enter data
-		case 1:
-
-			enterData(dataSet, anger);
-			break;
-			//display data
-		case 2:
-
-			displayData(dataSet, anger);
-			break;
-			//sort data
-		case 3:
-
-			sortData(dataSet, anger);
-			break;
-			//search data
-		case 4:
-
-			cout << "What are you looking for?" << endl;
-			while (!(cin >> search) || cin.fail() || (search < 0 || search >= 10000)) {
-				
-				if (anger < MODERATE) {
-					if (search < 0 || search >= 10000) {
-						cout << "We don't work with those numbers" << endl;
-					}
-					else {
-						cout << "Thats not exactly a number persay" << endl;
-					}
-					anger += .3;
-				}
-				else {
-					anger += .1;
-				}
-
-				cin.clear();
-				cin.ignore(100, '\n');
-
-				
-
-				cout << "What are you looking for?" << endl;
-			}
-			searchData(dataSet, search, anger, sorted);
-			break;
-			//exit gaslight
-		case 5:
-
-			if (getRes("Are you sure (y/n)", 'y', 'n') == 'n') {
+		if (choice == 1) {
+			try { account = logIn(); }
+			catch (string exception) {
+				cout << exception;
 				choice = 0;
 			}
-			if (anger > VERY) {
-				if (getRand(1, 30) == 1) {
-					while (choice != 0) {
-						if (getRes("Are you sure (y/n)", 'y', 'n') == 'n') {
-							choice = 0;
-						}
-					}
-				}
+		}
+		else if (choice == 2) {
+			try { createAccount(); }
+			catch (string exception) {
+				cout << exception;
+				choice = 0;
 			}
-			break;
-
 		}
 
-	} while (choice != menu.size() + 1);
-
-	if (anger < MODERATE) {
-		endProgram();
-	}
-	else if (anger == HORROR) {
-		for (int i = 0; i < 2000; i++) {
-			cout << getRand(0, 1);
-			Sleep(20);
-		}
-	}
-}
-
-
-
-//file processing for anger retention
-
-
-// handles the begining section that initiates the anger system
-
-
-
-void enterData(vector<Data>& dataSet, Anger& anger)
-{
-	float input;
-	string num;
-	bool valid;
-	bool dec;
-	const char* value = nullptr;
-	Data data;
+	} while (choice != 1);
 
 	do {
-		valid = true;
-		dec = false;
 
+		cout << "Cheese Bank" << endl;
 
-		cout << "How much Doge Coin did you get this week";
-
-		//space for anger related stuff
-
-		if (anger < MODERATE) {
-			cout << "(####.##)";
-		}
-		else {
-			if (getRand(1, 20) == 1) {
-				cout << "(";
-				for (int i = 0; i < 100; i++) {
-					cout << "*";
-				}
-				cout << ")";
-			}
-		}
-
-		cout << ": ";
-
-		cin.ignore(100, '\n');
-		getline(cin, num);
-
-		//too big
-		if (num.size() > 7) {
-			valid = false;
-		}
-		else if (num.size() == 0) {
-			valid = false;
-		}
-		else {
-
-			value = num.c_str();
-
-
-			for (int i = 0; i < num.size(); i++) {
-				if (value[i] == '.') {
-					if (i == num.size() - 1 || i == 0) {
-						valid = false;
-					}
-					else if (dec) {
-						valid = false;
-					}
-					else {
-						dec = true;
-					}
-				}
-				else if (!isdigit(value[i])) {
-					valid = false;
-				}
-
-			}
-
-			value = nullptr;
-
-			//If invalid for incorrect forating
-			if (!valid) {
-				//normal incorrect validation output
-				if (anger < MODERATE) {
-					cout << "No thats not a number" << endl;
-					anger += .5;
-				}
-				//silent treatment then just being down right upset
-				else {
-					if (anger == HORROR) {
-						cout << ":(" << endl;
-					}
-					anger += .2;
-				}
-			}
-		}
-
-
-	} while (!valid);
-
-	input = stof(num);
-
-	data.data = input;
-	data.week = dataSet.size() + 1;
-
-	dataSet.push_back(data);
-}
-
-
-
-
-void displayData(vector<Data>& dataSet, Anger& anger)
-{
-	if (anger > VERY) {
-
-		cout << "\n\n\nLoading";
-		for (int i = anger.getAngerLevel(); i > MODERATE; i--) {
-			Sleep(30000);
-			cout << ".";
-		}
+		cout << "Hello " << account.getName() << ", you have " << account.getCheese() << "lbs of cheese\n" << endl;
+		choice = makeMenu(menu);
 		cout << endl;
-	}
-	if (anger > HORROR) {
-		cout << "Oo ps I droppe d your d ata com e ba ck later" << endl;
-	}
-	else {
-		cout << setprecision(2) << fixed;
-		for (int i = 0; i < dataSet.size(); i++) {
-			cout << "Week " << right << setw(3) << dataSet[i].week;
-			cout << "\t" << setw(7) << dataSet[i].data << endl;
-		}
-	}
-}
 
-void sortData(vector<Data>& dataSet, Anger& anger)
-{
-	int i;
-	int j;
-	int position;
+		switch (choice) {
 
-	
-	for (i = 0; i < dataSet.size() - 1; i++) {
+		//withdraw
+		case 1:
 
-		position = i;
-
-		for (j = i + 1; j < dataSet.size(); j++) {
-
-			if (dataSet[position].data > dataSet[j].data) {
-				position = j;
+			if (account.getCheese() == 0) {
+				cout << "You have no cheese" << endl;
 			}
-			swap(dataSet[i], dataSet[position]);
-		}
-	}
-}
-
-void searchData(vector<Data>& dataSet, float search, Anger& anger, bool sorted)
-{
-
-
-	int first = 0;
-	int middle;
-	int last = dataSet.size() - 1;
-	int position = -1;
-	bool found = false;
-
-	if (sorted) {
-		while (!found && first <= last) {
-
-			middle = (first + last) / 2;
-
-			if (dataSet[middle].data == search) {
-
-				position = middle;
-				found = true;
-			}
-
-			else if (dataSet[middle].data < search) {
-
-				first = middle + 1;
-			}
-
 			else {
-
-				last = middle - 1;
+				withdraw(account);
 			}
+			break;
+			//Deposit
+		case 2:
+			
+			deposit(account);
+			
+			break;
+			//exit
+		case 3:
 
-		}
-	}
-	else {
-		for (int i = 0; i < dataSet.size(); i++) {
-
-			if (dataSet[i].data == search) {
-				position = i;
-				found = true;
+			if (getRes("Are you sure (y/n): ", 'y', 'n') == 'n') {
+				choice = 0;
 			}
+			break;
 		}
-	}
+		
+		if (choice < menu.size() + 1) {
+			cout << "Press enter to return to menu";
+			cin.ignore(100, '\n');
+			cin.get();
+		}
+
+
+	} while (choice != menu.size() + 1);
 	
-	if (found) {
-		cout << search << " is located in week " << dataSet[position].week << endl;
+}
+
+Account logIn()
+{
+	string firstName;
+	string lastName;
+	string number;
+	string check;
+	bool valid;
+
+	cout << "\nEnter first name: ";
+	cin >> firstName;
+	cin.ignore(100, '\n');
+	while (!checkName(firstName)) {
+		cout << "Name Invalid" << endl;
+		cout << "Press enter to continue";
+		cin.get();
+		cin.ignore(100, '\n');
+		cout << endl;
+
+		cout << "\nEnter first name: ";
+		cin >> firstName;
+		cin.ignore(100, '\n');
 	}
+
+	cout << "\nEnter last name: ";
+	cin >> lastName;
+	cin.ignore(100, '\n');
+	while (!checkName(lastName)) {
+		cout << "Name Invalid" << endl;
+		cout << "Press enter to continue";
+		cin.get();
+		cin.ignore(100, '\n');
+		cout << endl;
+
+		cout << "\nEnter last name: ";
+		cin >> lastName;
+		cin.ignore(100, '\n');
+	}
+
+	cout << "\nEnter account number: ";
+	cin >> number;
+	cin.ignore(100, '\n');
+	while (!checkNumber(number)) {
+		cout << "Name Invalid" << endl;
+		cout << "Press enter to continue";
+		cin.get();
+		cin.ignore(100, '\n');
+		cout << endl;
+
+		cout << "\nEnter account number: ";
+		cin >> number;
+		cin.ignore(100, '\n');
+	}
+
+	ifstream checkAccount("accounts.dat", ios::binary);
+	if (!checkAccount) {
+		throw "File Error";
+	}
+	checkAccount.seekg(0L, ios::beg);
+	while (checkAccount.peek() != EOF) {
+		readString(checkAccount, check);
+		valid = true;
+		if (check != firstName) valid = false;
+		readString(checkAccount, check);
+		if (check != lastName) valid = false;
+		readString(checkAccount, check);
+		if (check != number) valid = false;
+
+		if (checkAccount.fail()) break;
+
+		if (valid == true) break;
+	}
+	if (!valid) {
+		throw "Invalid LogIn";
+	}
+
+	Account account(firstName, lastName, number);
+
+	return account;
+}
+
+bool checkName(string name)
+{
+	bool valid = true;
+
+	if (name.size() > 100) valid = false;
+	else {
+		for (int i = 0; i < name.size(); i++) {
+			if (!isalpha(name.at(i))) valid = false;
+		}
+	}
+
+	return valid;
+}
+
+bool checkNumber(string number)
+{
+	bool valid = true;
+
+	if (number.size() < 8 || number.size() > 8) valid = false;
+	else {
+		for (int i = 0; i < number.size(); i++) {
+			if (!isdigit(number.at(i))) valid = false;
+		}
+	}
+
+	return valid;
+}
+
+void createAccount()
+{
+	string firstName;
+	string lastName;
+	int num;
+	string number;
+	string check;
+	float startVal = 0.00f;
+	bool valid;
+
+
+	cout << "\nEnter first name: ";
+	cin >> firstName;
+	cin.ignore(100, '\n');
+	while (!checkName(firstName)) {
+		cout << "Name Invalid" << endl;
+		cout << "Press enter to continue";
+		cin.get();
+		cin.ignore(100, '\n');
+		cout << endl;
+
+		cout << "\nEnter first name: ";
+		cin >> firstName;
+		cin.ignore(100, '\n');
+	}
+
+	cout << "\nEnter last name: ";
+	cin >> lastName;
+	cin.ignore(100, '\n');
+	while (!checkName(lastName)) {
+		cout << "Name Invalid" << endl;
+		cout << "Press enter to continue";
+		cin.get();
+		cin.ignore(100, '\n');
+		cout << endl;
+
+		cout << "\nEnter last name: ";
+		cin >> lastName;
+		cin.ignore(100, '\n');
+	}
+
+	num = getRand(0, 99999999);
+	number = to_string(num);
+	while (number.size() < 8) number += "0";
+
+	cout << "\nYour account number is " << number << endl;
+	cout << "Press enter to continue";
+	cin.get();
+	cin.ignore(100, '\n');
+
+	ofstream createAccount("accounts.dat", ios::binary | ios::app);
+	if (!createAccount) throw "File Error";
+	createAccount.seekp(ios::ate);
+	writeString(createAccount, firstName);
+	writeString(createAccount, lastName);
+	writeString(createAccount, number);
+	createAccount.close();
+
+	createAccount.open(number + ".dat", ios::binary);
+	createAccount.write(reinterpret_cast<char*> (&startVal), sizeof(float));
+	createAccount.write(reinterpret_cast<char*> (&startVal), sizeof(float));
+	createAccount.close();
+}
+
+void deposit(Account& account)
+{
+	float cheese;
+	cout << "How much cheese do you want to deposit: ";
+	while (!(cin >> cheese) || cin.fail() || cheese < 0 || cheese > 1000000000) {
+		cin.clear();
+		cin.ignore(100, '\n');
+		cout << "\nInvalid Input" << endl;
+		cout << "How much cheese do you want to deposit: ";
+	}
+	account.depositCheese(cheese);
+}
+
+void withdraw(Account& account)
+{
+	float cheese;
+	cout << "How much cheese do you want to withdraw: ";
+	while (!(cin >> cheese) || cin.fail() || cheese < 0 || cheese > account.getCheese()) {
+		cin.clear();
+		cin.ignore(100, '\n');
+		cout << "\nInvalid Input" << endl;
+		cout << "How much cheese do you want to withdraw: ";
+	}
+	account.withdrawCheese(cheese);
+
+}
+void writeString(ofstream& out, const string& str) {
+	size_t len = str.size();
+	out.write(reinterpret_cast<char*>(&len), sizeof(len));
+	out.write(str.c_str(), len);
+}
+
+void readString(ifstream& in, string& str) {
+	size_t len;
+	in.read(reinterpret_cast<char*>(&len), sizeof(len));
+	str.resize(len);
+	in.read(&str[0], len);
 }

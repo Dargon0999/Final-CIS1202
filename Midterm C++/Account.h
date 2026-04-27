@@ -1,25 +1,31 @@
 #pragma once
 #include "Anger.h"
+#include "fstream"
 #include <vector>
 
-struct Data {
-	float data;
-	int week;
-};
+using namespace std;
 
 class Account : public Anger
 {
 private:
-	vector<Data> history;
+	string firstName;
+	string lastName;
 	float cheese;
-	int accountNumber;
+	string accountNumber;
 
 public:
+
 	Account();
-	Account(int);
+	Account(string, string, string);
 
+	~Account();
 
+	float getCheese();
+	string getAccountNumber();
+	string getName();
 
+	void depositCheese(float&);
+	void withdrawCheese(float&);
 
 };
 

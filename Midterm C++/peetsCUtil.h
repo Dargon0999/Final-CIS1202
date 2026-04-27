@@ -3,6 +3,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <cctype>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <random>
